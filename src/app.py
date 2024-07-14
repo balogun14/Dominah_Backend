@@ -36,7 +36,7 @@ def get_db():
 # User Endpoints
 @app.post("/users/", response_model=User)
 async def create_user(user: User, db: Session = Depends(get_db)):
-    db_user = UserDB(id=user.id or uuid.uuid4(), name=user.name, email=user.email, password=user.password)
+    db_user = UserDB(id=user.id or uuid.uuid4(), first_name=user.first_name, email=user.email, last_name=user.last_name)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -54,9 +54,9 @@ async def update_user(user_id: UUID, user: User, db: Session = Depends(get_db)):
     db_user = db.query(UserDB).filter(UserDB.id == user_id).first()
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    db_user.name = user.name
+    db_user.first_name = user.first_name
     db_user.email = user.email
-    db_user.password = user.password
+    db_user.last_name = user.last_name
     db.commit()
     db.refresh(db_user)
     return db_user
